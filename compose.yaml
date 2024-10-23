@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: 'mongo:latest'
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=bikeStore
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_ROOT_USERNAME=root
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+
+  bikestore-app:
+    image: 'bikestore-app'  # Imagen de tu aplicación Java
+    container_name: bikestore-app
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://root:secret@mongodb:27017/bikeStore?authSource=admin
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
